@@ -1,19 +1,31 @@
 -- JOIN --
 
 -- 1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+SELECT * 
+FROM `students`
+RIGHT JOIN `degrees` on `degrees`.`id` = `students`.`degree_id`
+WHERE `degrees`.`name` = 'Corso di Laurea in Economia';
 
 
-
--- 2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze
-
+-- 2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze !!
+SELECT *
+FROM `degrees`
+INNER JOIN `departments` on `departments`.`id` = `degrees`.`department_id`
+WHERE `departments`.`name` = 'Dipartimento di Neuroscienze';
 
 
 -- 3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)
+SELECT `course_id`,`name`,`surname` FROM `course_teacher`
+INNER JOIN `teachers` on `course_teacher`.`teacher_id` = `teachers`.`id`
+WHERE `name` = 'Fulvio' AND `surname` = 'Amato';
 
 
-
--- 4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e 
-
+-- 4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome
+SELECT `students`.`surname`,`students`.`name`, `degrees`.`name`, `departments`.`name`
+FROM `students`
+INNER JOIN `degrees` on `students`.`degree_id` = `degrees`.`id`
+INNER  JOIN `departments` on `degrees`.`department_id` = `departments`.`id`
+ORDER BY `students`.`surname`, `students`.`name`;
 
 
 -- 5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
@@ -32,11 +44,13 @@
 -- GROUP BY --
 
 -- 1. Contare quanti iscritti ci sono stati ogni anno
-
+SELECT `enrolment_date`, COUNT(id) FROM `students`
+GROUP BY `enrolment_date`;
 
 
 -- 2. Contare gli insegnanti che hanno l'ufficio nello stesso edificio
-
+SELECT `office_address`, COUNT(id) FROM `teachers`
+GROUP BY `office_address`;
 
 
 -- 3. Calcolare la media dei voti di ogni appello d'esame
@@ -44,3 +58,7 @@
 
 
 -- 4. Contare quanti corsi di laurea ci sono per ogni dipartimento
+SELECT COUNT(`degrees`.`id`)
+FROM `degrees`
+INNER JOIN `departments` on `departments`.`id` = `degrees`.`department_id`
+ORDER BY `departments`.`name`;
